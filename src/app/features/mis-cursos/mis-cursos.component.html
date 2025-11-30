@@ -1,0 +1,108 @@
+<div class="dashboard">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h2>🎓 SGE</h2>
+    </div>
+    <ul class="menu">
+      <li><a routerLink="/dashboard"><span>🏠</span> Dashboard</a></li>
+      <li><a routerLink="/mis-cursos" class="active"><span>📚</span> Mis Cursos</a></li>
+      <li><a routerLink="/perfil"><span>👤</span> Mi Perfil</a></li>
+      <li><a (click)="logout()" class="logout"><span>🚪</span> Cerrar Sesión</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="content">
+    <div class="container">
+      <!-- Sección: Mis Cursos Inscritos -->
+      <div class="header">
+        <h1>📚 Mis Cursos</h1>
+        <p class="subtitle">Gestiona tus cursos inscritos</p>
+      </div>
+
+      <div class="cursos-inscritos-section" *ngIf="cursosInscritos.length > 0">
+        <h2 class="section-title">✅ Cursos Inscritos ({{ cursosInscritos.length }})</h2>
+        
+        <div class="cursos-grid">
+          <div class="curso-card inscrito" *ngFor="let curso of cursosInscritos">
+            <div class="curso-header">
+              <h3>{{ curso.nombre }}</h3>
+              <span class="badge-creditos">{{ curso.creditos }} créditos</span>
+            </div>
+            <p class="curso-descripcion">{{ curso.descripcion }}</p>
+            <div class="curso-info">
+              <span class="info-item">
+                <strong>👨‍🏫 Profesor:</strong> {{ curso.profesor }}
+              </span>
+              <span class="info-item">
+                <strong>📅 Inscrito:</strong> {{ curso.fechaInscripcion }}
+              </span>
+            </div>
+            <button class="btn-desinscribir" (click)="desinscribirse(curso)">
+              ❌ Desinscribirse
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="empty-state" *ngIf="cursosInscritos.length === 0 && !loading">
+        <div class="empty-icon">📚</div>
+        <h3>No estás inscrito en ningún curso</h3>
+        <p>Explora los cursos disponibles abajo y comienza a aprender</p>
+      </div>
+
+      <!-- Sección: Cursos Disponibles -->
+      <div class="cursos-disponibles-section">
+        <h2 class="section-title">🔍 Cursos Disponibles</h2>
+        
+        <app-search-bar
+          placeholder="Buscar cursos por nombre, descripción o profesor..."
+          (search)="onSearch($event)"
+        ></app-search-bar>
+
+        <div *ngIf="loading" class="loading">
+          <div class="spinner"></div>
+          <p>Cargando cursos...</p>
+        </div>
+
+        <div class="cursos-grid" *ngIf="!loading">
+          <div class="curso-card" *ngFor="let curso of filteredCursos">
+            <div class="curso-header">
+              <h3>{{ curso.nombre }}</h3>
+              <span class="badge-creditos">{{ curso.creditos }} créditos</span>
+            </div>
+            <p class="curso-descripcion">{{ curso.descripcion }}</p>
+            <div class="curso-info">
+              <span class="info-item">
+                <strong>👨‍🏫 Profesor:</strong> {{ curso.profesor }}
+              </span>
+            </div>
+            
+            <button 
+              *ngIf="!estaInscrito(curso.id!)" 
+              class="btn-inscribir"
+              (click)="inscribirse(curso)"
+            >
+              ➕ Inscribirse
+            </button>
+            
+            <button 
+              *ngIf="estaInscrito(curso.id!)" 
+              class="btn-inscrito"
+              disabled
+            >
+              ✓ Ya inscrito
+            </button>
+          </div>
+        </div>
+
+        <div class="empty-state" *ngIf="!loading && filteredCursos.length === 0">
+          <div class="empty-icon">🔍</div>
+          <h3>No se encontraron cursos</h3>
+          <p>Intenta con otra búsqueda</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
