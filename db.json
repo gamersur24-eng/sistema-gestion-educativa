@@ -1,0 +1,115 @@
+{
+  "usuarios": [
+    {
+      "id": 1,
+      "nombre": "Admin Principal",
+      "email": "admin@universidad.edu",
+      "password": "admin123",
+      "rol": "admin",
+      "activo": true
+    },
+    {
+      "id": 2,
+      "nombre": "Juan Pérez",
+      "email": "jperez@universidad.edu",
+      "password": "prof123",
+      "rol": "profesor",
+      "activo": true
+    },
+    {
+      "id": 3,
+      "nombre": "María García",
+      "email": "mgarcia@universidad.edu",
+      "password": "est123",
+      "rol": "estudiante",
+      "activo": true
+    },
+    {
+      "id": 4,
+      "nombre": "Carlos Rodríguez",
+      "email": "crodriguez@universidad.edu",
+      "password": "prof123",
+      "rol": "profesor",
+      "activo": true
+    },
+    {
+      "id": 5,
+      "nombre": "Ana López",
+      "email": "alopez@universidad.edu",
+      "password": "est123",
+      "rol": "estudiante",
+      "activo": true
+    }
+  ],
+  "cursos": [
+    {
+      "id": 1,
+      "nombre": "Programación Web",
+      "descripcion": "Desarrollo de aplicaciones web modernas con Angular y React",
+      "creditos": 4,
+      "profesor": "Juan Pérez"
+    },
+    {
+      "id": 2,
+      "nombre": "Base de Datos",
+      "descripcion": "Diseño y gestión de bases de datos relacionales y NoSQL",
+      "creditos": 3,
+      "profesor": "Ana Martínez"
+    },
+    {
+      "id": 3,
+      "nombre": "Algoritmos y Estructuras de Datos",
+      "descripcion": "Fundamentos de algoritmos y estructuras de datos eficientes",
+      "creditos": 5,
+      "profesor": "Carlos Rodríguez"
+    },
+    {
+      "id": 4,
+      "nombre": "Ingeniería de Software",
+      "descripcion": "Metodologías ágiles y mejores prácticas en desarrollo de software",
+      "creditos": 4,
+      "profesor": "Juan Pérez"
+    }
+  ],
+  "inscripciones": [
+    {
+      "id": 1,
+      "usuarioId": 3,
+      "cursoId": 1,
+      "fechaInscripcion": "2024-01-15"
+    },
+    {
+      "id": 2,
+      "usuarioId": 3,
+      "cursoId": 2,
+      "fechaInscripcion": "2024-01-15"
+    },
+    {
+      "id": 3,
+      "usuarioId": 3,
+      "cursoId": 4,
+      "fechaInscripcion": "2024-01-20"
+    },
+    {
+      "id": 4,
+      "usuarioId": 5,
+      "cursoId": 1,
+      "fechaInscripcion": "2024-01-16"
+    },
+    {
+      "id": 5,
+      "usuarioId": 5,
+      "cursoId": 3,
+      "fechaInscripcion": "2024-01-18"
+    },
+    {
+      "usuarioId": 3,
+      "cursoId": 3,
+      "fechaInscripcion": "2025-11-30",
+      "id": 6
+    }
+  ],
+  "auth": {
+    "login": "/auth/login"
+  }
+}

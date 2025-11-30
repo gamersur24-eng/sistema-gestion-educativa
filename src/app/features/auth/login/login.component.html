@@ -1,0 +1,63 @@
+<div class="login-page">
+  <div class="login-container">
+    <div class="login-header">
+      <h1>🎓 Sistema de Gestión Educativa</h1>
+      <p>Inicia sesión para continuar</p>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <div class="form-group">
+        <label for="email">Correo Electrónico</label>
+        <input 
+          type="email" 
+          id="email"
+          formControlName="email" 
+          placeholder="usuario&#64;universidad.edu"
+          [class.invalid]="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        />
+        <span 
+          class="error-message" 
+          *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched"
+        >
+          Por favor ingrese un email válido
+        </span>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <input 
+          type="password" 
+          id="password"
+          formControlName="password" 
+          placeholder="••••••••"
+          [class.invalid]="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+        />
+        <span 
+          class="error-message" 
+          *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched"
+        >
+          La contraseña es requerida
+        </span>
+      </div>
+
+      <button 
+        type="submit" 
+        class="btn-login" 
+        [disabled]="loginForm.invalid || loading"
+      >
+        {{ loading ? 'Iniciando sesión...' : 'Iniciar Sesión' }}
+      </button>
+
+      <div *ngIf="errorMessage" class="alert-error">
+        {{ errorMessage }}
+      </div>
+    </form>
+
+    <div class="demo-credentials">
+      <h4>Credenciales de Prueba:</h4>
+      <p><strong>Admin:</strong> admin&#64;universidad.edu / admin123</p>
+      <p><strong>Profesor:</strong> jperez&#64;universidad.edu / prof123</p>
+      <p><strong>Estudiante:</strong> mgarcia&#64;universidad.edu / est123</p>
+    </div>
+  </div>
+</div>
