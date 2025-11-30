@@ -1,0 +1,190 @@
+<div class="dashboard">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h2>🎓 SGE</h2>
+    </div>
+    <ul class="menu">
+      <li><a routerLink="/dashboard"><span>🏠</span> Dashboard</a></li>
+      <li><a routerLink="/cursos" class="active"><span>📚</span> Cursos</a></li>
+      <li><a (click)="logout()" class="logout"><span>🚪</span> Cerrar Sesión</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="content">
+    <div class="container">
+      <div class="header">
+        <div>
+          <h1>📚 Gestión de Cursos</h1>
+          <p class="subtitle">Administra los cursos del sistema</p>
+        </div>
+        <button class="btn-primary" (click)="openModal()">
+          ➕ Nuevo Curso
+        </button>
+      </div>
+
+      <app-search-bar
+        placeholder="Buscar cursos por nombre, descripción o profesor..."
+        (search)="onSearch($event)"
+      ></app-search-bar>
+
+      <div *ngIf="loading && cursos.length === 0" class="loading">
+        <div class="spinner"></div>
+        <p>Cargando cursos...</p>
+      </div>
+
+      <div *ngIf="errorMessage && cursos.length === 0" class="alert-error">
+        {{ errorMessage }}
+      </div>
+
+      <div class="table-container" *ngIf="!loading || cursos.length > 0">
+        <table *ngIf="filteredCursos.length > 0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre del Curso</th>
+              <th>Descripción</th>
+              <th>Créditos</th>
+              <th>Profesor</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let curso of filteredCursos">
+              <td>{{ curso.id }}</td>
+              <td><strong>{{ curso.nombre }}</strong></td>
+              <td>{{ curso.descripcion }}</td>
+              <td>
+                <span class="badge-creditos">{{ curso.creditos }}</span>
+              </td>
+              <td>{{ curso.profesor }}</td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-edit" (click)="openModal(curso)">
+                    ✏️ Editar
+                  </button>
+                  <button class="btn-delete" (click)="deleteCurso(curso.id!, curso.nombre)">
+                    🗑️ Eliminar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div *ngIf="!loading && cursos.length === 0" class="empty-state">
+          <div class="empty-icon">📚</div>
+          <h3>No hay cursos registrados</h3>
+          <p>Comienza creando tu primer curso</p>
+          <button class="btn-primary" (click)="openModal()">
+            ➕ Crear Primer Curso
+          </button>
+        </div>
+
+        <div *ngIf="!loading && cursos.length > 0 && filteredCursos.length === 0" class="empty-state">
+          <div class="empty-icon">🔍</div>
+          <h3>No se encontraron cursos</h3>
+          <p>Intenta con otros términos de búsqueda</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ isEditing ? '✏️ Editar Curso' : '➕ Nuevo Curso' }}</h2>
+          <button class="close-btn" (click)="closeModal()">×</button>
+        </div>
+
+        <form [formGroup]="cursoForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label>Nombre del Curso *</label>
+            <input 
+              type="text" 
+              formControlName="nombre" 
+              placeholder="Ej: Programación Web"
+              [class.invalid]="cursoForm.get('nombre')?.invalid && cursoForm.get('nombre')?.touched"
+            />
+            <span 
+              class="error" 
+              *ngIf="cursoForm.get('nombre')?.invalid && cursoForm.get('nombre')?.touched"
+            >
+              El nombre es requerido (mínimo 3 caracteres)
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label>Descripción *</label>
+            <textarea 
+              formControlName="descripcion" 
+              rows="3"
+              placeholder="Describe el contenido del curso..."
+              [class.invalid]="cursoForm.get('descripcion')?.invalid && cursoForm.get('descripcion')?.touched"
+            ></textarea>
+            <span 
+              class="error" 
+              *ngIf="cursoForm.get('descripcion')?.invalid && cursoForm.get('descripcion')?.touched"
+            >
+              La descripción es requerida
+            </span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Créditos *</label>
+              <input 
+                type="number" 
+                formControlName="creditos" 
+                min="1" 
+                max="10"
+                placeholder="1-10"
+                [class.invalid]="cursoForm.get('creditos')?.invalid && cursoForm.get('creditos')?.touched"
+              />
+              <span 
+                class="error" 
+                *ngIf="cursoForm.get('creditos')?.invalid && cursoForm.get('creditos')?.touched"
+              >
+                Créditos debe estar entre 1 y 10
+              </span>
+            </div>
+
+            <div class="form-group">
+              <label>Profesor *</label>
+              <input 
+                type="text" 
+                formControlName="profesor" 
+                placeholder="Nombre del profesor"
+                [class.invalid]="cursoForm.get('profesor')?.invalid && cursoForm.get('profesor')?.touched"
+              />
+              <span 
+                class="error" 
+                *ngIf="cursoForm.get('profesor')?.invalid && cursoForm.get('profesor')?.touched"
+              >
+                El profesor es requerido
+              </span>
+            </div>
+          </div>
+
+          <div *ngIf="errorMessage" class="alert-error">
+            {{ errorMessage }}
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" (click)="closeModal()">
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="btn-primary" 
+              [disabled]="cursoForm.invalid || loading"
+            >
+              {{ loading ? 'Guardando...' : (isEditing ? 'Actualizar' : 'Crear') }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>

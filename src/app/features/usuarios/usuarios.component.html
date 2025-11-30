@@ -1,0 +1,192 @@
+<div class="dashboard">
+  <!-- Sidebar -->
+  <nav class="sidebar">
+    <div class="sidebar-header">
+      <h2>🎓 SGE</h2>
+    </div>
+    <ul class="menu">
+      <li><a routerLink="/dashboard"><span>🏠</span> Dashboard</a></li>
+      <li><a routerLink="/usuarios" class="active"><span>👥</span> Usuarios</a></li>
+      <li><a routerLink="/cursos"><span>📚</span> Cursos</a></li>
+      <li><a (click)="logout()" class="logout"><span>🚪</span> Cerrar Sesión</a></li>
+    </ul>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="content">
+    <div class="container">
+      <div class="header">
+        <div>
+          <h1>👥 Gestión de Usuarios</h1>
+          <p class="subtitle">Administra los usuarios del sistema</p>
+        </div>
+        <button class="btn-primary" (click)="openModal()">
+          ➕ Nuevo Usuario
+        </button>
+      </div>
+
+      <div *ngIf="loading && usuarios.length === 0" class="loading">
+        <div class="spinner"></div>
+        <p>Cargando usuarios...</p>
+      </div>
+
+      <div *ngIf="errorMessage && usuarios.length === 0" class="alert-error">
+        {{ errorMessage }}
+      </div>
+
+      <div class="table-container" *ngIf="!loading || usuarios.length > 0">
+        <table *ngIf="usuarios.length > 0">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Rol</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let usuario of usuarios">
+              <td>{{ usuario.id }}</td>
+              <td><strong>{{ usuario.nombre }}</strong></td>
+              <td>{{ usuario.email }}</td>
+              <td>
+                <span class="badge" [ngClass]="getRoleBadgeClass(usuario.rol)">
+                  {{ usuario.rol }}
+                </span>
+              </td>
+              <td>
+                <span class="status-badge" [class.active]="usuario.activo" [class.inactive]="!usuario.activo">
+                  {{ usuario.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>
+                <div class="action-buttons">
+                  <button class="btn-edit" (click)="openModal(usuario)">
+                    ✏️ Editar
+                  </button>
+                  <button class="btn-delete" (click)="deleteUsuario(usuario.id!, usuario.nombre)">
+                    🗑️ Eliminar
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div *ngIf="!loading && usuarios.length === 0" class="empty-state">
+          <div class="empty-icon">👥</div>
+          <h3>No hay usuarios registrados</h3>
+          <p>Comienza creando tu primer usuario</p>
+          <button class="btn-primary" (click)="openModal()">
+            ➕ Crear Primer Usuario
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" *ngIf="showModal" (click)="closeModal()">
+      <div class="modal" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+          <h2>{{ isEditing ? '✏️ Editar Usuario' : '➕ Nuevo Usuario' }}</h2>
+          <button class="close-btn" (click)="closeModal()">×</button>
+        </div>
+
+        <form [formGroup]="usuarioForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label>Nombre Completo *</label>
+            <input 
+              type="text" 
+              formControlName="nombre" 
+              placeholder="Ej: Juan Pérez"
+              [class.invalid]="usuarioForm.get('nombre')?.invalid && usuarioForm.get('nombre')?.touched"
+            />
+            <span 
+              class="error" 
+              *ngIf="usuarioForm.get('nombre')?.invalid && usuarioForm.get('nombre')?.touched"
+            >
+              El nombre es requerido (mínimo 3 caracteres)
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label>Email *</label>
+            <input 
+              type="email" 
+              formControlName="email" 
+              placeholder="usuario@universidad.edu"
+              [class.invalid]="usuarioForm.get('email')?.invalid && usuarioForm.get('email')?.touched"
+            />
+            <span 
+              class="error" 
+              *ngIf="usuarioForm.get('email')?.invalid && usuarioForm.get('email')?.touched"
+            >
+              Ingrese un email válido
+            </span>
+          </div>
+
+          <div class="form-group">
+            <label>Contraseña {{ isEditing ? '(dejar vacío para no cambiar)' : '*' }}</label>
+            <input 
+              type="password" 
+              formControlName="password" 
+              placeholder="••••••••"
+              [class.invalid]="usuarioForm.get('password')?.invalid && usuarioForm.get('password')?.touched"
+            />
+            <span 
+              class="error" 
+              *ngIf="usuarioForm.get('password')?.invalid && usuarioForm.get('password')?.touched"
+            >
+              La contraseña debe tener al menos 6 caracteres
+            </span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Rol *</label>
+              <select formControlName="rol" [class.invalid]="usuarioForm.get('rol')?.invalid && usuarioForm.get('rol')?.touched">
+                <option value="admin">Administrador</option>
+                <option value="profesor">Profesor</option>
+                <option value="estudiante">Estudiante</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label>Estado</label>
+              <div class="toggle-container">
+                <input 
+                  type="checkbox" 
+                  id="activo" 
+                  formControlName="activo"
+                  class="toggle-input"
+                />
+                <label for="activo" class="toggle-label">
+                  {{ usuarioForm.get('activo')?.value ? 'Activo' : 'Inactivo' }}
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="errorMessage" class="alert-error">
+            {{ errorMessage }}
+          </div>
+
+          <div class="modal-actions">
+            <button type="button" class="btn-secondary" (click)="closeModal()">
+              Cancelar
+            </button>
+            <button 
+              type="submit" 
+              class="btn-primary" 
+              [disabled]="usuarioForm.invalid || loading"
+            >
+              {{ loading ? 'Guardando...' : (isEditing ? 'Actualizar' : 'Crear') }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </main>
+</div>
