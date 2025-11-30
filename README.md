@@ -345,35 +345,6 @@ sistema-gestion-educativa/
 | POST | `/inscripciones` | Inscribirse a un curso | Estudiante |
 | DELETE | `/inscripciones/:id` | Desinscribirse de un curso | Estudiante |
 
----
-
-## 📸 Capturas de Pantalla
-
-### Pantalla de Login
-![Login](docs/screenshots/login.png)
-
-### Dashboard Estudiante
-![Dashboard Estudiante](docs/screenshots/dashboard-estudiante.png)
-
-### Sistema de Inscripciones
-![Mis Cursos](docs/screenshots/mis-cursos.png)
-
-### Búsqueda en Tiempo Real
-![Búsqueda](docs/screenshots/busqueda.png)
-
-### Notificación Toast
-![Toast](docs/screenshots/toast-notification.png)
-
-### Dashboard Administrador
-![Dashboard Admin](docs/screenshots/dashboard-admin.png)
-
-### Gestión de Cursos
-![Gestión Cursos](docs/screenshots/gestion-cursos.png)
-
-### Página No Autorizado
-![No Autorizado](docs/screenshots/unauthorized.png)
-
----
 
 ## 🐛 Solución de Problemas
 
