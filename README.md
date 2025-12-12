@@ -463,13 +463,7 @@ Este proyecto fue desarrollado como parte de un proyecto académico para IDAT.
 
 ---
 
-## 👨‍💻 Autor
 
-**Omar Cordova Pintado**  
-Instituto: IDAT  
-Año: 2025
-
----
 
 ## 🙏 Agradecimientos
 
